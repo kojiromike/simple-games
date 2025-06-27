@@ -38,6 +38,13 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
+        /* Hide radio buttons for game state management */
+        input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
         .game-board {
             display: grid;
             grid-template-columns: repeat(3, 120px);
@@ -61,25 +68,13 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         .cell:hover {
             background: rgba(255, 255, 255, 1);
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .cell.x {
-            color: #e74c3c;
-        }
-
-        .cell.o {
-            color: #3498db;
-        }
-
-        .cell:disabled {
-            cursor: not-allowed;
-            opacity: 0.8;
         }
 
         .game-info {
@@ -106,8 +101,93 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
 
-        .winner-animation {
-            animation: pulse 0.6s ease-in-out;
+        /* Turn indicator - default state */
+        .turn-indicator::before {
+            content: "Player X's Turn";
+        }
+
+        /* CSS-only turn switching using radio button states */
+        /* X moves (odd numbered moves: 1, 3, 5, 7, 9) */
+        .move1:checked ~ .game-board .cell1::after { content: "X"; color: #e74c3c; }
+        .move3:checked ~ .game-board .cell2::after { content: "X"; color: #e74c3c; }
+        .move5:checked ~ .game-board .cell3::after { content: "X"; color: #e74c3c; }
+        .move7:checked ~ .game-board .cell4::after { content: "X"; color: #e74c3c; }
+        .move9:checked ~ .game-board .cell5::after { content: "X"; color: #e74c3c; }
+        .move11:checked ~ .game-board .cell6::after { content: "X"; color: #e74c3c; }
+        .move13:checked ~ .game-board .cell7::after { content: "X"; color: #e74c3c; }
+        .move15:checked ~ .game-board .cell8::after { content: "X"; color: #e74c3c; }
+        .move17:checked ~ .game-board .cell9::after { content: "X"; color: #e74c3c; }
+
+        /* O moves (even numbered moves: 2, 4, 6, 8) */
+        .move2:checked ~ .game-board .cell1::after { content: "O"; color: #3498db; }
+        .move4:checked ~ .game-board .cell2::after { content: "O"; color: #3498db; }
+        .move6:checked ~ .game-board .cell3::after { content: "O"; color: #3498db; }
+        .move8:checked ~ .game-board .cell4::after { content: "O"; color: #3498db; }
+        .move10:checked ~ .game-board .cell5::after { content: "O"; color: #3498db; }
+        .move12:checked ~ .game-board .cell6::after { content: "O"; color: #3498db; }
+        .move14:checked ~ .game-board .cell7::after { content: "O"; color: #3498db; }
+        .move16:checked ~ .game-board .cell8::after { content: "O"; color: #3498db; }
+        .move18:checked ~ .game-board .cell9::after { content: "O"; color: #3498db; }
+
+        /* Turn indicator updates */
+        .move1:checked ~ .game-info .turn-indicator::before { content: "Player O's Turn"; }
+        .move2:checked ~ .game-info .turn-indicator::before { content: "Player X's Turn"; }
+        .move3:checked ~ .game-info .turn-indicator::before { content: "Player O's Turn"; }
+        .move4:checked ~ .game-info .turn-indicator::before { content: "Player X's Turn"; }
+        .move5:checked ~ .game-info .turn-indicator::before { content: "Player O's Turn"; }
+        .move6:checked ~ .game-info .turn-indicator::before { content: "Player X's Turn"; }
+        .move7:checked ~ .game-info .turn-indicator::before { content: "Player O's Turn"; }
+        .move8:checked ~ .game-info .turn-indicator::before { content: "Player X's Turn"; }
+        .move9:checked ~ .game-info .turn-indicator::before { content: "Game Over"; }
+
+        /* Prevent clicking on occupied cells by disabling pointer events */
+        .move1:checked ~ .game-board .cell1,
+        .move2:checked ~ .game-board .cell1 { pointer-events: none; }
+        .move3:checked ~ .game-board .cell2,
+        .move4:checked ~ .game-board .cell2 { pointer-events: none; }
+        .move5:checked ~ .game-board .cell3,
+        .move6:checked ~ .game-board .cell3 { pointer-events: none; }
+        .move7:checked ~ .game-board .cell4,
+        .move8:checked ~ .game-board .cell4 { pointer-events: none; }
+        .move9:checked ~ .game-board .cell5,
+        .move10:checked ~ .game-board .cell5 { pointer-events: none; }
+        .move11:checked ~ .game-board .cell6,
+        .move12:checked ~ .game-board .cell6 { pointer-events: none; }
+        .move13:checked ~ .game-board .cell7,
+        .move14:checked ~ .game-board .cell7 { pointer-events: none; }
+        .move15:checked ~ .game-board .cell8,
+        .move16:checked ~ .game-board .cell8 { pointer-events: none; }
+        .move17:checked ~ .game-board .cell9,
+        .move18:checked ~ .game-board .cell9 { pointer-events: none; }
+
+        /* Win detection for X */
+        /* Row wins */
+        .move1:checked ~ .move3:checked ~ .move5:checked ~ .game-info .turn-indicator::before,
+        .move7:checked ~ .move9:checked ~ .move11:checked ~ .game-info .turn-indicator::before,
+        .move13:checked ~ .move15:checked ~ .move17:checked ~ .game-info .turn-indicator::before,
+        /* Column wins */
+        .move1:checked ~ .move7:checked ~ .move13:checked ~ .game-info .turn-indicator::before,
+        .move3:checked ~ .move9:checked ~ .move15:checked ~ .game-info .turn-indicator::before,
+        .move5:checked ~ .move11:checked ~ .move17:checked ~ .game-info .turn-indicator::before,
+        /* Diagonal wins */
+        .move1:checked ~ .move9:checked ~ .move17:checked ~ .game-info .turn-indicator::before,
+        .move5:checked ~ .move9:checked ~ .move13:checked ~ .game-info .turn-indicator::before {
+            content: "Player X Wins!";
+        }
+
+        /* Win detection for O */
+        /* Row wins */
+        .move2:checked ~ .move4:checked ~ .move6:checked ~ .game-info .turn-indicator::before,
+        .move8:checked ~ .move10:checked ~ .move12:checked ~ .game-info .turn-indicator::before,
+        .move14:checked ~ .move16:checked ~ .move18:checked ~ .game-info .turn-indicator::before,
+        /* Column wins */
+        .move2:checked ~ .move8:checked ~ .move14:checked ~ .game-info .turn-indicator::before,
+        .move4:checked ~ .move10:checked ~ .move16:checked ~ .game-info .turn-indicator::before,
+        .move6:checked ~ .move12:checked ~ .move18:checked ~ .game-info .turn-indicator::before,
+        /* Diagonal wins */
+        .move2:checked ~ .move10:checked ~ .move18:checked ~ .game-info .turn-indicator::before,
+        .move6:checked ~ .move10:checked ~ .move14:checked ~ .game-info .turn-indicator::before {
+            content: "Player O Wins!";
         }
 
         @keyframes pulse {
@@ -116,182 +196,53 @@
             100% { transform: scale(1); }
         }
 
-        .winning-cell {
-            background: linear-gradient(45deg, #ffeaa7, #fdcb6e) !important;
-            animation: glow 1s ease-in-out infinite alternate;
-        }
-
         @keyframes glow {
             from { box-shadow: 0 0 10px rgba(253, 203, 110, 0.5); }
             to { box-shadow: 0 0 20px rgba(253, 203, 110, 0.8); }
         }
-
-        /* Pure CSS game logic using checkbox hack */
-        .game-state {
-            display: none;
-        }
-
-        /* Player turn indicator */
-        .turn-indicator::before {
-            content: "Player X's Turn";
-        }
-
-        /* Game state management with checkboxes */
-        .cell input[type="checkbox"] {
-            display: none;
-        }
-
-        .cell label {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        /* X and O display logic */
-        .game-state:nth-child(odd) ~ .game-board .cell:nth-child(1) input:checked ~ label::after,
-        .game-state:nth-child(odd) ~ .game-board .cell:nth-child(3) input:checked ~ label::after,
-        .game-state:nth-child(odd) ~ .game-board .cell:nth-child(5) input:checked ~ label::after,
-        .game-state:nth-child(odd) ~ .game-board .cell:nth-child(7) input:checked ~ label::after,
-        .game-state:nth-child(odd) ~ .game-board .cell:nth-child(9) input:checked ~ label::after {
-            content: "X";
-            color: #e74c3c;
-            font-size: 3rem;
-            font-weight: bold;
-        }
-
-        .game-state:nth-child(even) ~ .game-board .cell:nth-child(2) input:checked ~ label::after,
-        .game-state:nth-child(even) ~ .game-board .cell:nth-child(4) input:checked ~ label::after,
-        .game-state:nth-child(even) ~ .game-board .cell:nth-child(6) input:checked ~ label::after,
-        .game-state:nth-child(even) ~ .game-board .cell:nth-child(8) input:checked ~ label::after {
-            content: "O";
-            color: #3498db;
-            font-size: 3rem;
-            font-weight: bold;
-        }
-
-        /* Simple alternating turn display */
-        .turn-x .turn-indicator::before {
-            content: "Player X's Turn";
-        }
-
-        .turn-o .turn-indicator::before {
-            content: "Player O's Turn";
-        }
     </style>
 </head>
 <body>
-    <div class="game-container">
+    <form class="game-container">
         <h1>Tic Tac Toe</h1>
+        
+        <!-- Hidden radio buttons for game state management -->
+        <input type="radio" name="move" class="move1" id="move1">
+        <input type="radio" name="move" class="move2" id="move2">
+        <input type="radio" name="move" class="move3" id="move3">
+        <input type="radio" name="move" class="move4" id="move4">
+        <input type="radio" name="move" class="move5" id="move5">
+        <input type="radio" name="move" class="move6" id="move6">
+        <input type="radio" name="move" class="move7" id="move7">
+        <input type="radio" name="move" class="move8" id="move8">
+        <input type="radio" name="move" class="move9" id="move9">
+        <input type="radio" name="move" class="move10" id="move10">
+        <input type="radio" name="move" class="move11" id="move11">
+        <input type="radio" name="move" class="move12" id="move12">
+        <input type="radio" name="move" class="move13" id="move13">
+        <input type="radio" name="move" class="move14" id="move14">
+        <input type="radio" name="move" class="move15" id="move15">
+        <input type="radio" name="move" class="move16" id="move16">
+        <input type="radio" name="move" class="move17" id="move17">
+        <input type="radio" name="move" class="move18" id="move18">
         
         <div class="game-info">
             <div class="turn-indicator"></div>
         </div>
 
-        <div class="game-board" id="gameBoard">
-            <button class="cell" data-cell="0"></button>
-            <button class="cell" data-cell="1"></button>
-            <button class="cell" data-cell="2"></button>
-            <button class="cell" data-cell="3"></button>
-            <button class="cell" data-cell="4"></button>
-            <button class="cell" data-cell="5"></button>
-            <button class="cell" data-cell="6"></button>
-            <button class="cell" data-cell="7"></button>
-            <button class="cell" data-cell="8"></button>
+        <div class="game-board">
+            <label for="move1" class="cell cell1"></label>
+            <label for="move3" class="cell cell2"></label>
+            <label for="move5" class="cell cell3"></label>
+            <label for="move7" class="cell cell4"></label>
+            <label for="move9" class="cell cell5"></label>
+            <label for="move11" class="cell cell6"></label>
+            <label for="move13" class="cell cell7"></label>
+            <label for="move15" class="cell cell8"></label>
+            <label for="move17" class="cell cell9"></label>
         </div>
 
-        <button class="reset-btn" onclick="resetGame()">New Game</button>
-    </div>
-
-    <script>
-        let currentPlayer = 'X';
-        let gameBoard = ['', '', '', '', '', '', '', '', ''];
-        let gameActive = true;
-
-        const winningConditions = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ];
-
-        function handleCellClick(event) {
-            const clickedCell = event.target;
-            const clickedCellIndex = parseInt(clickedCell.getAttribute('data-cell'));
-
-            if (gameBoard[clickedCellIndex] !== '' || !gameActive) {
-                return;
-            }
-
-            gameBoard[clickedCellIndex] = currentPlayer;
-            clickedCell.textContent = currentPlayer;
-            clickedCell.classList.add(currentPlayer.toLowerCase());
-            clickedCell.disabled = true;
-
-            checkResult();
-        }
-
-        function checkResult() {
-            let roundWon = false;
-            let winningCells = [];
-
-            for (let i = 0; i < winningConditions.length; i++) {
-                const [a, b, c] = winningConditions[i];
-                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-                    roundWon = true;
-                    winningCells = [a, b, c];
-                    break;
-                }
-            }
-
-            if (roundWon) {
-                document.querySelector('.turn-indicator').textContent = `Player ${currentPlayer} Wins!`;
-                document.querySelector('.game-container').classList.add('winner-animation');
-                
-                winningCells.forEach(index => {
-                    document.querySelector(`[data-cell="${index}"]`).classList.add('winning-cell');
-                });
-                
-                gameActive = false;
-                return;
-            }
-
-            if (!gameBoard.includes('')) {
-                document.querySelector('.turn-indicator').textContent = "It's a Draw!";
-                gameActive = false;
-                return;
-            }
-
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            document.querySelector('.turn-indicator').textContent = `Player ${currentPlayer}'s Turn`;
-        }
-
-        function resetGame() {
-            currentPlayer = 'X';
-            gameBoard = ['', '', '', '', '', '', '', '', ''];
-            gameActive = true;
-            document.querySelector('.turn-indicator').textContent = "Player X's Turn";
-            document.querySelector('.game-container').classList.remove('winner-animation');
-
-            document.querySelectorAll('.cell').forEach(cell => {
-                cell.textContent = '';
-                cell.disabled = false;
-                cell.classList.remove('x', 'o', 'winning-cell');
-            });
-        }
-
-        document.querySelectorAll('.cell').forEach(cell => {
-            cell.addEventListener('click', handleCellClick);
-        });
-
-        // Initialize game
-        document.querySelector('.turn-indicator').textContent = "Player X's Turn";
-    </script>
+        <button type="reset" class="reset-btn">New Game</button>
+    </form>
 </body>
 </html>
