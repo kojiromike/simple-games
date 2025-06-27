@@ -12,7 +12,7 @@ This is a monorepo containing multiple small games, each in its own subdirectory
 
 ## Games
 
-*No games implemented yet. Each game will be added as a subdirectory with its own implementation.*
+- [Tic-Tac-Toe](https://kojiromike.github.io/simple-games/tic-tac-toe/) - Classic tic-tac-toe game implemented in HTML/CSS/JavaScript
 
 ## Structure
 
